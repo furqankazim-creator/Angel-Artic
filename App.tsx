@@ -207,12 +207,12 @@ function Root() {
       <View style={{ flex: 1, width: '100%' }}>{body}</View>
       {showTabs && (
         <SafeAreaView edges={['bottom']} style={{ backgroundColor: colors.white, borderTopWidth: 1, borderTopColor: colors.border, width: '100%' }}>
-          <View style={{ flexDirection: 'row', paddingVertical: 4, paddingHorizontal: 6, gap: 4, width: '100%', maxWidth: 1040, alignSelf: 'center' }}>
+          <View style={{ flexDirection: 'row', paddingVertical: 2, paddingHorizontal: 6, gap: 4, width: '100%', maxWidth: 1040, alignSelf: 'center' }}>
             {TABS.map((t) => (
               <Pressable key={t.key} accessibilityRole="tab" onPress={() => switchTab(t.key)}
-                style={{ flex: 1, minHeight: 46, borderRadius: 12, alignItems: 'center', justifyContent: 'center', paddingVertical: 3, backgroundColor: tab === t.key && !top ? soft.coral : colors.white }}>
-                <T style={{ fontSize: 18, lineHeight: 22 }}>{t.icon}</T>
-                <T k="caption" color={tab === t.key && !top ? colors.coral : colors.muted} style={{ fontSize: 10.5, lineHeight: 13, fontFamily: 'Nunito_700Bold' }}>{t.label}</T>
+                style={{ flex: 1, minHeight: 38, height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center', paddingVertical: 2, backgroundColor: tab === t.key && !top ? soft.coral : colors.white }}>
+                <T style={{ fontSize: 16, lineHeight: 18 }}>{t.icon}</T>
+                <T k="caption" color={tab === t.key && !top ? colors.coral : colors.muted} style={{ fontSize: 10, lineHeight: 12, fontFamily: 'Nunito_700Bold' }}>{t.label}</T>
               </Pressable>
             ))}
           </View>
