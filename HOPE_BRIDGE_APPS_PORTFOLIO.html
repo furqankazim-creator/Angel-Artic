@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hope Bridge Digital — Complete Apps Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6C5CE7;
+      --primary-light: #F0EDFF;
+      --coral: #FF6B6B;
+      --coral-light: #FFF0F0;
+      --teal: #00B894;
+      --teal-light: #E6FBF5;
+      --sunny: #FDCB6E;
+      --sunny-light: #FFF8E7;
+      --sky: #0984E3;
+      --sky-light: #EAF4FD;
+      --dark: #2D3436;
+      --text: #2D2A4A;
+      --muted: #636E72;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border: #E2E8F0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #6C5CE7, #8e44ad);
+      color: white;
+      padding: 60px 20px 45px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      background: rgba(255,255,255,0.22);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 44px;
+      line-height: 1.2;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .tagline {
+      font-size: 18px;
+      max-width: 720px;
+      margin: 0 auto 24px;
+      opacity: 0.95;
+    }
+    .container {
+      max-width: 1040px;
+      margin: -30px auto 60px;
+      padding: 0 20px;
+    }
+    .qr-banner {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+    .qr-info { flex: 1; min-width: 280px; }
+    .qr-info h2 {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 26px;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .qr-card {
+      background: var(--primary-light);
+      padding: 16px;
+      border-radius: 20px;
+      text-align: center;
+    }
+    .qr-card img {
+      width: 150px;
+      height: 150px;
+      display: block;
+      border-radius: 12px;
+    }
+    .qr-card span {
+      display: block;
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+    .app-card {
+      background: var(--card-bg);
+      border-radius: 28px;
+      padding: 36px;
+      margin-bottom: 36px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+      display: grid;
+      grid-template-columns: 1fr 160px;
+      gap: 28px;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .app-card { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
+    }
+    .app-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+    .app-icon { font-size: 42px; }
+    .app-title {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+    .app-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .app-badge.artic { background: var(--teal-light); color: var(--teal); }
+    .app-badge.talk { background: var(--primary-light); color: var(--primary); }
+    .app-badge.quest { background: var(--sunny-light); color: #d48806; }
+    .app-badge.hub { background: var(--sky-light); color: var(--sky); }
+    .app-tagline {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+    .app-tagline.artic { color: var(--teal); }
+    .app-tagline.talk { color: var(--coral); }
+    .app-tagline.quest { color: #d48806; }
+    .app-tagline.hub { color: var(--sky); }
+    .app-desc {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .feature-item {
+      background: var(--bg);
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+    .feature-item strong {
+      display: block;
+      font-size: 13px;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+    .feature-item p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .spec-pill {
+      font-size: 11px;
+      font-weight: 700;
+      background: #F1F5F9;
+      color: #475569;
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .app-qr-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--bg);
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+    .app-qr-col img {
+      width: 125px;
+      height: 125px;
+      border-radius: 12px;
+      background: white;
+      padding: 4px;
+    }
+    .app-qr-col span {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--dark);
+      text-align: center;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .safety-card {
+      background: #0F172A;
+      color: white;
+      border-radius: 24px;
+      padding: 32px;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .safety-card h3 {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+    .safety-card p {
+      font-size: 14px;
+      color: #94A3B8;
+      max-width: 640px;
+      margin: 0 auto 20px;
+    }
+    .safety-pills {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #38BDF8;
+    }
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge">Hope Bridge Digital</div>
+    <h1>Empowering Every Voice Through Technology</h1>
+    <p class="tagline">Purpose-built, child-safe, and clinically aligned assistive technology for neurodivergent learners, speech sound practice, and non-verbal communication.</p>
+  </header>
+
+  <div class="container">
+
+    <!-- QR Hero Banner -->
+    <div class="qr-banner">
+      <div class="qr-info">
+        <h2>Live Website & Apps Showcase</h2>
+        <p style="color: var(--muted); font-size: 14px; margin-bottom: 14px;">
+          Scan with any mobile phone or tap below to open the live Hope Bridge Digital web portal:
+        </p>
+        <a href="https://hopebirdgedigital.site/" target="_blank" class="btn btn-primary">
+          Open hopebirdgedigital.site →
+        </a>
+      </div>
+      <div class="qr-card">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=https%3A%2F%2Fhopebirdgedigital.site%2F" alt="Scan to open website">
+        <span>Scan with Phone</span>
+      </div>
+    </div>
+
+    <!-- App 1: Angel Artic -->
+    <div class="app-card">
+      <div>
+        <div class="app-header">
+          <span class="app-icon">😇</span>
+          <div>
+            <h2 class="app-title">Angel Artic</h2>
+            <span class="app-badge artic">Speech Sound Practice</span>
+          </div>
+        </div>
+        <p class="app-tagline artic">Speak • Play • Shine — Articulation practice built for children.</p>
+        <p class="app-desc">
+          A gentle, encouraging articulation app that helps children master speech sounds in a structured, game-like setting. Verified with our proprietary microphone voice-gate algorithm.
+        </p>
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>🗣️ 17 Sounds & 204 Words</strong>
+            <p>Initial, Medial, and Final position practice with slow auditory models.</p>
+          </div>
+          <div class="feature-item">
+            <strong>🎙️ Microphone Voice-Gate</strong>
+            <p>Smart noise rejection ensures only genuine vocal attempts earn stars.</p>
+          </div>
+          <div class="feature-item">
+            <strong>👄 Mouth Placement Guides</strong>
+            <p>Animated cues illustrate tongue, lip, and teeth position for tricky sounds.</p>
+          </div>
+          <div class="feature-item">
+            <strong>📊 Parent & SLP Hub</strong>
+            <p>Behind a PIN: 14-day trends, mastery tracking, audio playback, and weekly PDF reports.</p>
+          </div>
+        </div>
+        <div class="specs">
+          <span class="spec-pill">iOS & Android</span>
+          <span class="spec-pill">100% Offline</span>
+          <span class="spec-pill">Zero In-App Ads</span>
+          <span class="spec-pill">COPPA Compliant</span>
+        </div>
+      </div>
+      <div class="app-qr-col">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=8&data=https%3A%2F%2Fhopebirdgedigital.site%2F" alt="Angel Artic QR">
+        <span>Scan to Open Site</span>
+        <a href="https://hopebirdgedigital.site/" target="_blank" class="btn btn-primary" style="font-size: 11px; padding: 6px 12px;">Open Live</a>
+      </div>
+    </div>
+
+    <!-- App 2: Angel Talk -->
+    <div class="app-card">
+      <div>
+        <div class="app-header">
+          <span class="app-icon">💬</span>
+          <div>
+            <h2 class="app-title">Angel Talk</h2>
+            <span class="app-badge talk">AAC Picture Communication</span>
+          </div>
+        </div>
+        <p class="app-tagline talk">A voice for every child.</p>
+        <p class="app-desc">
+          An Augmentative and Alternative Communication (AAC) app empowering non-verbal and speech-delayed individuals to express thoughts, needs, and feelings through intuitive picture boards.
+        </p>
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>🖼️ 14,800+ Symbol Library</strong>
+            <p>Extensive symbol cards with custom photo upload and voice recording capabilities.</p>
+          </div>
+          <div class="feature-item">
+            <strong>🌍 Bilingual Natural Voices</strong>
+            <p>High-quality child and adult voices in English and Arabic.</p>
+          </div>
+          <div class="feature-item">
+            <strong>🎙️ Voice Add Tool</strong>
+            <p>Parents and educators can create custom vocabulary boards simply by speaking aloud.</p>
+          </div>
+          <div class="feature-item">
+            <strong>🧘 Calming & Routine Tools</strong>
+            <p>Integrated visual schedules, social stories, and an interactive breathing pacer.</p>
+          </div>
+        </div>
+        <div class="specs">
+          <span class="spec-pill">iOS & Android</span>
+          <span class="spec-pill">English & Arabic TTS</span>
+          <span class="spec-pill">Offline Board</span>
+          <span class="spec-pill">No Forced Account</span>
+        </div>
+      </div>
+      <div class="app-qr-col">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=8&data=https%3A%2F%2Fhopebirdgedigital.site%2F" alt="Angel Talk QR">
+        <span>Scan to Open Site</span>
+        <a href="https://hopebirdgedigital.site/" target="_blank" class="btn btn-primary" style="font-size: 11px; padding: 6px 12px; background: var(--coral);">Open Live</a>
+      </div>
+    </div>
+
+    <!-- App 3: Angel World Quest -->
+    <div class="app-card">
+      <div>
+        <div class="app-header">
+          <span class="app-icon">🗺️</span>
+          <div>
+            <h2 class="app-title">Angel World Quest</h2>
+            <span class="app-badge quest">Speech Gaming Engine</span>
+          </div>
+        </div>
+        <p class="app-tagline quest">Turn speech sound drills into an engaging adventure.</p>
+        <p class="app-desc">
+          An interactive quest system that makes high-repetition practice fun for children. Unlocks milestone stickers, worlds, and outfits as speech targets are practiced.
+        </p>
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>🗺️ 5 Adventure Worlds</strong>
+            <p>Meadow, Ocean, Forest, Dino Valley, and Cosmic Galaxy.</p>
+          </div>
+          <div class="feature-item">
+            <strong>🎯 Daily Missions</strong>
+            <p>3 quick target words daily to build sustainable practice habits.</p>
+          </div>
+          <div class="feature-item">
+            <strong>✨ Mascot Expressions</strong>
+            <p>Gentle reactions that cheer, listen, and encourage without pressure.</p>
+          </div>
+          <div class="feature-item">
+            <strong>⭐ XP & Dressing Room</strong>
+            <p>Earn non-monetized XP to style the angel mascot with robes, hats, and wings.</p>
+          </div>
+        </div>
+        <div class="specs">
+          <span class="spec-pill">No Microtransactions</span>
+          <span class="spec-pill">Calm Sensory Mode</span>
+          <span class="spec-pill">100% Offline</span>
+        </div>
+      </div>
+      <div class="app-qr-col">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=8&data=https%3A%2F%2Fhopebirdgedigital.site%2F" alt="World Quest QR">
+        <span>Scan to Open Site</span>
+        <a href="https://hopebirdgedigital.site/" target="_blank" class="btn btn-primary" style="font-size: 11px; padding: 6px 12px; background: #d48806;">Open Live</a>
+      </div>
+    </div>
+
+    <!-- App 4: Hope Bridge Clinician & Parent Hub -->
+    <div class="app-card">
+      <div>
+        <div class="app-header">
+          <span class="app-icon">📊</span>
+          <div>
+            <h2 class="app-title">Clinician & Parent Hub</h2>
+            <span class="app-badge hub">Telepractice & Data</span>
+          </div>
+        </div>
+        <p class="app-tagline hub">Clear data. Transparent progress. Zero clutter.</p>
+        <p class="app-desc">
+          A dedicated portal for parents and Speech-Language Pathologists (SLPs) to evaluate phoneme mastery, compare audio over time, and export documentation for therapy reviews.
+        </p>
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>📈 14-Day Accuracy Trends</strong>
+            <p>Clear visual trajectory showing pronunciation improvements.</p>
+          </div>
+          <div class="feature-item">
+            <strong>🎧 Audio Compare Tool</strong>
+            <p>Side-by-side playback of recordings from different weeks.</p>
+          </div>
+          <div class="feature-item">
+            <strong>📄 One-Tap PDF Report</strong>
+            <p>Clean printable reports formatted for IEP meetings or clinical records.</p>
+          </div>
+          <div class="feature-item">
+            <strong>🔐 4-Digit Parent PIN</strong>
+            <p>Guarantees children cannot access configuration, external links, or data exports.</p>
+          </div>
+        </div>
+        <div class="specs">
+          <span class="spec-pill">Parent-PIN Locked</span>
+          <span class="spec-pill">Local Storage Only</span>
+          <span class="spec-pill">PDF Generation</span>
+        </div>
+      </div>
+      <div class="app-qr-col">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=8&data=https%3A%2F%2Fhopebirdgedigital.site%2F" alt="Clinician Hub QR">
+        <span>Scan to Open Site</span>
+        <a href="https://hopebirdgedigital.site/" target="_blank" class="btn btn-primary" style="font-size: 11px; padding: 6px 12px; background: var(--sky);">Open Live</a>
+      </div>
+    </div>
+
+    <!-- Safety Banner -->
+    <div class="safety-card">
+      <div style="font-size: 32px; margin-bottom: 6px;">🛡️</div>
+      <h3>Child Safety & Privacy Standard</h3>
+      <p>All Hope Bridge Digital apps adhere strictly to COPPA and App Store Kids Category policies: zero third-party ads, zero tracking, on-device audio processing, and parent-PIN gated outbound links.</p>
+      <div class="safety-pills">
+        <span>🔒 Zero Ads</span>
+        <span>•</span>
+        <span>📱 Private On-Device Data</span>
+        <span>•</span>
+        <span>🔐 Parent-PIN Gate</span>
+        <span>•</span>
+        <span>📶 Works Completely Offline</span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© Hope Bridge Digital — <a href="https://hopebirdgedigital.site/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 700;">hopebirdgedigital.site</a></p>
+    <p style="margin-top: 4px;">Contact: <a href="mailto:hello@hopebridgedigital.com" style="color: var(--muted);">hello@hopebridgedigital.com</a></p>
+  </footer>
+
+</body>
+</html>

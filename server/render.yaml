@@ -1,0 +1,16 @@
+# One-click deploy on Render (render.com). Create a "Blueprint" from this repo, then fill in the three secrets.
+services:
+  - type: web
+    name: angel-artic-scoring
+    runtime: docker
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: ./server
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: AZURE_KEY
+        sync: false
+      - key: AZURE_REGION
+        sync: false
+      - key: APP_TOKEN
+        sync: false
