@@ -177,19 +177,32 @@ export default function Talk() {
         </View>
 
         {/* Call to action */}
-        <View style={{ backgroundColor: colors.violet, borderRadius: 28, padding: 18, gap: 10, overflow: 'hidden' }}>
-          <View style={{ position: 'absolute', right: -36, top: -36, width: 130, height: 130, borderRadius: 65, backgroundColor: 'rgba(255,255,255,0.12)' }} />
+        <View style={{
+          backgroundColor: soft.violet,
+          borderRadius: 28,
+          padding: 18,
+          gap: 12,
+          overflow: 'hidden',
+          borderWidth: 1.5,
+          borderColor: '#D7D1FB',
+          shadowColor: colors.violet,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.08,
+          shadowRadius: 10,
+          elevation: 2,
+        }}>
+          <View style={{ position: 'absolute', right: -36, top: -36, width: 130, height: 130, borderRadius: 65, backgroundColor: 'rgba(108, 92, 231, 0.08)' }} />
           <Row style={{ alignItems: 'center', gap: 12 }}>
             <TalkMark size={64} />
             <View style={{ flex: 1 }}>
-              <T k="heading" color={colors.white} style={{ fontSize: 20, lineHeight: 26 }}>Give your child a bigger voice</T>
+              <T k="heading" color={colors.ink} style={{ fontSize: 20, lineHeight: 26 }}>Give your child a bigger voice</T>
             </View>
           </Row>
-          <T color="#EDEAFF" style={{ fontSize: 15, lineHeight: 22 }}>
+          <T color={colors.ink} style={{ fontSize: 15, lineHeight: 22, opacity: 0.9 }}>
             The full Angel Talk has thousands of symbols, your own photos, voices in English and Arabic, and calm tools for every day. Works offline, with no ads.
           </T>
           <Button label={ANGEL_TALK.inStores ? '⬇️ Get Angel Talk' : '✉️ Request early access'} color="sunny" onPress={() => (ANGEL_TALK.inStores ? Linking.openURL(ANGEL_TALK.url).catch(() => {}) : early())} />
-          <Button label="See what is inside ›" outline onPress={() => go('AngelTalk')} />
+          <Button label="See what is inside ›" outline color="violet" onPress={() => go('AngelTalk')} />
         </View>
         <Muted k="caption" style={{ textAlign: 'center' }}>Angel Talk supports communication. It is not a medical device or a diagnosis.</Muted>
       </ScrollView>

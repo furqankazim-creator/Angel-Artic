@@ -139,6 +139,51 @@ export default function Home() {
           </Card>
         )}
       </View>
+
+      {/* Target Focus Sounds Section */}
+      {profile.targetSounds.length > 0 && (
+        <View style={{ gap: 10 }}>
+          <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <T k="heading">🎯 My Focus Sounds</T>
+            <Pill label={`${profile.targetSounds.length} Active`} color="teal" />
+          </Row>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+            {profile.targetSounds.map((sid) => {
+              const snd = soundById(sid, s.customSounds);
+              if (!snd) return null;
+              return (
+                <Pressable
+                  key={`focus-${snd.id}`}
+                  accessibilityLabel={`Sound ${snd.label}`}
+                  onPress={() => openSound(snd.id)}
+                  style={{
+                    width: isDesktop ? '18.4%' : isTablet ? '23.4%' : narrow ? '47.5%' : '30.8%',
+                    minHeight: 122,
+                    borderRadius: 22,
+                    padding: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 4,
+                    backgroundColor: soft[snd.accent],
+                    borderWidth: 3,
+                    borderColor: colors[snd.accent],
+                    shadowColor: colors[snd.accent],
+                    shadowOffset: { width: 0, height: 3 },
+                    shadowOpacity: 0.15,
+                    shadowRadius: 6,
+                    elevation: 3,
+                  }}
+                >
+                  <Pic emoji={snd.emoji} size={56} name={SOUND_ANCHORS[snd.id]} />
+                  <T k="heading">{snd.label}</T>
+                  <T k="caption" color={colors[snd.accent]}>★ Focus Sound</T>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      )}
+
       {GROUPS.filter((g) => g !== 'Custom' || (s.customSounds && s.customSounds.length > 0)).map((g) => (
         <View key={g} style={{ gap: 10 }}>
           <T k="heading">{g === 'Custom' ? 'Custom Sounds ⭐' : g}</T>

@@ -272,6 +272,26 @@ test('daily: strictly draws all 5 words from target sounds when set', () => {
   assert.equal(uniqueWords.size, 5);
 });
 
+test('daily: respects profile.dailyGoal (10 words) strictly drawn from target sounds', () => {
+  const profile: any = {
+    id: 'khan-10',
+    name: 'Khan',
+    age: 5,
+    dailyGoal: 10,
+    targetSounds: ['k', 'g', 'f'],
+    attempts: [],
+  };
+
+  const challenge = getDailyChallenge(profile);
+  assert.equal(challenge.length, 10);
+  for (const item of challenge) {
+    assert.ok(['k', 'g', 'f'].includes(item.soundId), `Unexpected sound ${item.soundId}`);
+    assert.equal(item.badge, 'Target');
+  }
+  const uniqueWords = new Set(challenge.map((c) => c.word.id));
+  assert.equal(uniqueWords.size, 10);
+});
+
 test('custom sounds: creation and resolution', () => {
   const custom = createCustomSound('tr', '🚂', 'Slide tongue back, round lips', 'sky');
   assert.equal(custom.id, 'tr');

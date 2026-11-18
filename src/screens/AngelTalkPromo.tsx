@@ -14,24 +14,37 @@ export function AngelTalkPromo() {
   return (
     <Screen title="Angel Talk" onBack>
       {/* Hero */}
-      <View style={{ backgroundColor: colors.violet, borderRadius: 28, padding: 20, gap: 10, overflow: 'hidden' }}>
-        <View style={{ position: 'absolute', right: -40, top: -40, width: 150, height: 150, borderRadius: 75, backgroundColor: 'rgba(255,255,255,0.12)' }} />
-        <View style={{ position: 'absolute', left: -30, bottom: -50, width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(255,255,255,0.08)' }} />
+      <View style={{
+        backgroundColor: soft.violet,
+        borderRadius: 28,
+        padding: 20,
+        gap: 12,
+        overflow: 'hidden',
+        borderWidth: 1.5,
+        borderColor: '#D7D1FB',
+        shadowColor: colors.violet,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        elevation: 2,
+      }}>
+        <View style={{ position: 'absolute', right: -40, top: -40, width: 150, height: 150, borderRadius: 75, backgroundColor: 'rgba(108, 92, 231, 0.08)' }} />
+        <View style={{ position: 'absolute', left: -30, bottom: -50, width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(108, 92, 231, 0.05)' }} />
         <Row style={{ alignItems: 'center', gap: 12 }}>
           <TalkMark size={72} />
           <View style={{ flex: 1 }}>
-            <T k="caption" color="#DAD5FF" style={{ letterSpacing: 1.2 }}>FROM THE MAKERS OF ANGEL ARTIC</T>
-            <T k="title" color={colors.white}>Angel Talk 💬</T>
+            <T k="caption" color={colors.violet} style={{ letterSpacing: 1.2, fontFamily: 'Nunito_800ExtraBold' }}>FROM THE MAKERS OF ANGEL ARTIC</T>
+            <T k="title" color={colors.ink}>Angel Talk 💬</T>
           </View>
         </Row>
-        <T k="display" color={colors.white} style={{ fontSize: 28, lineHeight: 34 }}>{ANGEL_TALK.tagline}</T>
-        <T color="#EDEAFF" style={{ fontSize: 16, lineHeight: 23 }}>
+        <T k="display" color={colors.ink} style={{ fontSize: 28, lineHeight: 34 }}>{ANGEL_TALK.tagline}</T>
+        <T color={colors.ink} style={{ fontSize: 16, lineHeight: 23, opacity: 0.9 }}>
           Tap pictures and the app speaks. A picture communication board (AAC) for children who need a voice right now.
         </T>
         <Row style={{ flexWrap: 'wrap', gap: 6 }}>
-          <Pill label="🌍 English & Arabic" color="sunny" />
-          <Pill label="📴 Works offline" color="sunny" />
-          <Pill label="🚫 No ads" color="sunny" />
+          <Pill label="🌍 English & Arabic" color="violet" />
+          <Pill label="📴 Works offline" color="teal" />
+          <Pill label="🚫 No ads" color="pink" />
         </Row>
         <Button label={ANGEL_TALK.inStores ? '⬇️ Get Angel Talk' : '✉️ Request early access'} color="sunny" onPress={() => (ANGEL_TALK.inStores ? open(ANGEL_TALK.url) : early())} style={{ marginTop: 4 }} />
       </View>

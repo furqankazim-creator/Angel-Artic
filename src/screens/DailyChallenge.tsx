@@ -30,7 +30,7 @@ export default function DailyChallenge() {
       <Card accent="pink">
         <T k="heading">Today's Focus Challenge ⭐</T>
         <Muted>
-          5 words automatically chosen from sounds {profile.name} is working on. Finish all five for 25 bonus XP!
+          {challengeItems.length} words automatically chosen from sounds {profile.name} is working on. Finish all {challengeItems.length} for 25 bonus XP!
         </Muted>
       </Card>
 

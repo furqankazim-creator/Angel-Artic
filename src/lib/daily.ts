@@ -110,6 +110,7 @@ export function getDailyChallenge(
   profile: Profile,
   allWords: Word[] = WORDS,
   today: string = dayKey(),
+  count?: number,
 ): DailyChallengeItem[] {
   const problematic = getProblematicSounds(profile);
   const seed = seedFromDay(today);
@@ -142,8 +143,9 @@ export function getDailyChallenge(
 
   const selectedItems: DailyChallengeItem[] = [];
   const chosenWordIds = new Set<string>();
+  const targetCount = count ?? (profile.dailyGoal ? profile.dailyGoal : 5);
 
-  for (let slot = 0; slot < 5; slot++) {
+  for (let slot = 0; slot < targetCount; slot++) {
     // Cycle through target/problematic sounds with seed offset so daily challenge stays fresh each day
     const soundObj = soundPool[(seed + slot) % soundPool.length];
     const soundId = soundObj.soundId;
