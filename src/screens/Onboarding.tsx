@@ -17,7 +17,7 @@ const Label = ({ children }: { children: string }) => <T k="bodyBold" style={{ m
 
 export default function Onboarding() {
   const { addProfile, set } = useStore();
-  const { openSound } = useNav();
+  const { switchTab } = useNav();
   const [name, setName] = useState('');
   const [age, setAge] = useState(6);
   const [sounds, setSounds] = useState<string[]>(BANDS[bandFor(6)].focus.slice(0, 3));
@@ -29,7 +29,7 @@ export default function Onboarding() {
   const finish = () => {
     addProfile({ name: name.trim(), age, targetSounds: sounds, dailyGoal: goal });
     set((s) => ({ ...s, onboarded: true, pin, recoveryWord: rec.trim().toLowerCase() }));
-    openSound(sounds[0]); // first minute: go straight into the first sound
+    switchTab('Home'); // Go straight to the Sounds page with focus sounds
   };
   const toggle = (id: string) => setSounds((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
