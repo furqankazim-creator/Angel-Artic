@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Image, Platform, Pressable, Text, useWindowDimensions, View } from 'react-native';
+import { AccessibilityInfo, ActivityIndicator, Animated, Image, Platform, Pressable, Text, useWindowDimensions, View } from 'react-native';
 import { isRtl } from './src/i18n';
 import { useFonts } from 'expo-font';
 import { ErrorBoundary, installGlobalHandler } from './src/crash';
@@ -44,6 +44,79 @@ const TABS: { key: Tab; label: string; icon: string }[] = [
   { key: 'Parents', label: 'Parents', icon: '📊' },
 ];
 
+function PublisherTicker() {
+  const { go } = useNav();
+  const { s } = useStore();
+  const { width } = useWindowDimensions();
+  const [contentWidth, setContentWidth] = React.useState(0);
+  const [reduceMotion, setReduceMotion] = React.useState(false);
+  const translateX = React.useRef(new Animated.Value(0)).current;
+  const message = 'HOPE BRIDGE DIGITAL  ·  Every child deserves tools that help them thrive.  ·  ';
+  const copyCount = Math.max(2, Math.ceil(width / (contentWidth || 260)) + 2);
+
+  React.useEffect(() => {
+    let active = true;
+    AccessibilityInfo.isReduceMotionEnabled().then((enabled) => {
+      if (active) setReduceMotion(enabled);
+    });
+    const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
+    return () => {
+      active = false;
+      subscription.remove();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (reduceMotion || contentWidth === 0) return;
+    const start = isRtl(s.settings.lang) ? -contentWidth : 0;
+    const end = isRtl(s.settings.lang) ? 0 : -contentWidth;
+    translateX.setValue(start);
+    const animation = Animated.loop(Animated.timing(translateX, {
+      toValue: end,
+      duration: Math.max(10000, contentWidth * 40),
+      useNativeDriver: Platform.OS !== 'web',
+    }));
+    animation.start();
+    return () => animation.stop();
+  }, [contentWidth, reduceMotion, s.settings.lang, translateX]);
+
+  return (
+    <Pressable
+      onPress={() => go('HopeBridge')}
+      accessibilityRole="button"
+      accessibilityLabel="Hope Bridge Digital. Every child deserves tools that help them thrive. Learn more."
+      accessibilityHint="Opens the Hope Bridge Digital publisher page."
+      style={{
+        minHeight: 34,
+        width: '100%',
+        overflow: 'hidden',
+        justifyContent: 'center',
+        backgroundColor: colors.sunny,
+      }}
+    >
+      {reduceMotion ? (
+        <Text numberOfLines={2} style={{ paddingHorizontal: 12, textAlign: 'center', fontSize: 11, lineHeight: 15, fontFamily: 'Nunito_700Bold', color: colors.ink }}>
+          Hope Bridge Digital · Every child deserves tools that help them thrive.
+        </Text>
+      ) : (
+        <Animated.View style={{ flexDirection: 'row', direction: 'ltr', transform: [{ translateX }] }}>
+          {Array.from({ length: copyCount }, (_, index) => (
+            <Text
+              key={index}
+              onLayout={index === 0 ? (event) => setContentWidth(event.nativeEvent.layout.width) : undefined}
+              numberOfLines={1}
+              accessible={false}
+              style={{ flexShrink: 0, paddingHorizontal: 12, fontSize: 11, lineHeight: 15, fontFamily: 'Nunito_700Bold', color: colors.ink }}
+            >
+              {message}
+            </Text>
+          ))}
+        </Animated.View>
+      )}
+    </Pressable>
+  );
+}
+
 function Header() {
   const { profile, derived } = useStore();
   const { go } = useNav();
@@ -82,6 +155,7 @@ function Header() {
         zIndex: 10,
       }}
     >
+      <PublisherTicker />
       <View
         style={{
           flexDirection: 'row',
@@ -207,12 +281,36 @@ function Root() {
       <View style={{ flex: 1, width: '100%' }}>{body}</View>
       {showTabs && (
         <SafeAreaView edges={['bottom']} style={{ backgroundColor: colors.white, borderTopWidth: 1, borderTopColor: colors.border, width: '100%' }}>
-          <View style={{ flexDirection: 'row', paddingVertical: 2, paddingHorizontal: 6, gap: 4, width: '100%', maxWidth: 1040, alignSelf: 'center' }}>
+          <View style={{ flexDirection: 'row', paddingTop: 4, paddingBottom: 3, paddingHorizontal: 8, gap: 4, width: '100%', maxWidth: 1040, alignSelf: 'center' }}>
             {TABS.map((t) => (
-              <Pressable key={t.key} accessibilityRole="tab" onPress={() => switchTab(t.key)}
-                style={{ flex: 1, minHeight: 38, height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center', paddingVertical: 2, backgroundColor: tab === t.key && !top ? soft.coral : colors.white }}>
-                <T style={{ fontSize: 16, lineHeight: 18 }}>{t.icon}</T>
-                <T k="caption" color={tab === t.key && !top ? colors.coral : colors.muted} style={{ fontSize: 10, lineHeight: 12, fontFamily: 'Nunito_700Bold' }}>{t.label}</T>
+              <Pressable
+                key={t.key}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: tab === t.key && !top }}
+                onPress={() => switchTab(t.key)}
+                style={{
+                  flex: 1,
+                  minHeight: 48,
+                  height: 48,
+                  borderRadius: 12,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 2,
+                  paddingHorizontal: 2,
+                  backgroundColor: tab === t.key && !top ? soft.coral : 'transparent',
+                  borderWidth: 1,
+                  borderColor: tab === t.key && !top ? '#FFC5C5' : 'transparent',
+                }}
+              >
+                <T style={{ fontSize: 18, lineHeight: 20 }}>{t.icon}</T>
+                <T
+                  k="caption"
+                  numberOfLines={1}
+                  color={tab === t.key && !top ? colors.coral : colors.muted}
+                  style={{ fontSize: 10, lineHeight: 12, fontFamily: tab === t.key && !top ? 'Nunito_800ExtraBold' : 'Nunito_700Bold' }}
+                >
+                  {t.label}
+                </T>
               </Pressable>
             ))}
           </View>
