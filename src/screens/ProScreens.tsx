@@ -8,7 +8,7 @@ import { buildReportHtml } from '../lib/report';
 import { persistFile } from '../lib/recordings';
 import { playUri } from '../audio';
 import { WordPic } from '../art/WordPic';
-import { Button, Card, Chip, Muted, Row, Screen, T } from '../ui';
+import { Button, Card, Chip, Muted, Pill, Row, Screen, T } from '../ui';
 import { POSITIONS, Position, SOUNDS, createCustomSound, soundById } from '../data/sounds';
 import { masteryFor } from '../lib/mastery';
 import { daysAgo } from '../lib/date';
@@ -26,6 +26,8 @@ function CustomWordsInner() {
   const [position, setPosition] = useState<Position>('initial');
   const [word, setWord] = useState('');
   const [emoji, setEmoji] = useState('⭐');
+  const [sentence, setSentence] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [image, setImage] = useState<string | undefined>();
   const [voice, setVoice] = useState<string | undefined>();
   const [rec, setRec] = useState(false);
@@ -75,9 +77,53 @@ function CustomWordsInner() {
 
   const mine = s.custom.filter((c) => c.profileId === profile?.id);
 
-  const add = () => {
+  const startEdit = (c: any) => {
+    setEditingId(c.id);
+    setWord(c.word);
+    setEmoji(c.emoji || '⭐');
+    setSoundId(c.soundId);
+    setPosition(c.position);
+    setImage(c.imageUri);
+    setVoice(c.voiceUri);
+    setSentence(c.sentence && !c.sentence.startsWith('Say "') ? c.sentence : '');
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setWord('');
+    setEmoji('⭐');
+    setSentence('');
+    setImage(undefined);
+    setVoice(undefined);
+  };
+
+  const saveWord = () => {
     if (!word.trim() || !profile) return;
     const w = word.trim().toLowerCase();
+    const cleanSent = sentence.trim() || `Say "${w}".`;
+
+    if (editingId) {
+      set((st) => ({
+        ...st,
+        custom: st.custom.map((item) =>
+          item.id === editingId
+            ? {
+                ...item,
+                word: w,
+                soundId,
+                position,
+                emoji: emoji.trim() || '⭐',
+                sentence: cleanSent,
+                imageUri: image,
+                voiceUri: voice,
+              }
+            : item
+        ),
+      }));
+      cancelEdit();
+      return;
+    }
+
     set((st) => ({
       ...st,
       custom: [
@@ -89,24 +135,78 @@ function CustomWordsInner() {
           position,
           word: w,
           emoji: emoji.trim() || '⭐',
-          sentence: `Say "${w}".`,
+          sentence: cleanSent,
           custom: true,
           imageUri: image,
           voiceUri: voice,
         },
       ],
     }));
-    setWord('');
-    setImage(undefined);
-    setVoice(undefined);
+    cancelEdit();
+  };
+
+  const confirmDelete = (id: string, wordName: string) => {
+    Alert.alert(
+      'Delete Custom Word?',
+      `Remove "${wordName}" and its recordings?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            if (editingId === id) cancelEdit();
+            set((st) => ({ ...st, custom: st.custom.filter((x) => x.id !== id) }));
+          },
+        },
+      ]
+    );
   };
 
   return (
-    <Screen title="Custom Words" onBack>
+    <Screen title={editingId ? 'Edit Custom Word' : 'Custom Words'} onBack>
       <Muted>Add your family words, pets, or names with real photos and your own voice!</Muted>
 
+      {/* Editing Banner */}
+      {editingId && (
+        <Row style={{ alignItems: 'center', justifyContent: 'space-between', backgroundColor: soft.violet, padding: 12, borderRadius: 16 }}>
+          <T k="bodyBold" color={colors.violet}>✏️ Editing "{word}"</T>
+          <Button small outline label="✕ Cancel Edit" onPress={cancelEdit} color="coral" />
+        </Row>
+      )}
+
+      {/* Quick Idea Starters */}
+      <View style={{ gap: 6, marginTop: 4 }}>
+        <T k="caption" color={colors.muted} style={{ letterSpacing: 0.8, fontFamily: 'Nunito_800ExtraBold' }}>
+          💡 QUICK IDEAS (TAP TO PRE-FILL):
+        </T>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+          {[
+            { label: '🐶 Pet: Bella', word: 'Bella', emoji: '🐶', sound: 'b', pos: 'initial', sent: 'Bella is a happy puppy.' },
+            { label: '👩 Mommy', word: 'Mommy', emoji: '👩', sound: 'm', pos: 'initial', sent: 'I love Mommy.' },
+            { label: '👨 Daddy', word: 'Daddy', emoji: '👨', sound: 'd', pos: 'initial', sent: 'Daddy reads with me.' },
+            { label: '🍪 Cookie', word: 'Cookie', emoji: '🍪', sound: 'k', pos: 'initial', sent: 'I want a yummy cookie.' },
+            { label: '🧸 Teddy', word: 'Teddy', emoji: '🧸', sound: 't', pos: 'initial', sent: 'My soft teddy bear.' },
+          ].map((preset) => (
+            <Chip
+              key={preset.label}
+              label={preset.label}
+              on={false}
+              onPress={() => {
+                setWord(preset.word);
+                setEmoji(preset.emoji);
+                setSoundId(preset.sound);
+                setPosition(preset.pos as Position);
+                setSentence(preset.sent);
+              }}
+              color="violet"
+            />
+          ))}
+        </View>
+      </View>
+
       {/* Target Sound Selector */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
         <T k="heading" style={{ flexShrink: 1 }}>1. Choose target sound</T>
         <Button
           small
@@ -270,6 +370,13 @@ function CustomWordsInner() {
       <T k="heading" style={{ marginTop: 4 }}>3. Word & picture</T>
       <TextInput value={word} onChangeText={setWord} placeholder="Word name (e.g. Bella, Daddy, Oreo)" placeholderTextColor={colors.muted} style={input} />
       <TextInput value={emoji} onChangeText={setEmoji} placeholder="Emoji icon (fallback if no photo: e.g. 🐶)" placeholderTextColor={colors.muted} style={input} />
+      <TextInput
+        value={sentence}
+        onChangeText={setSentence}
+        placeholder={`Practice sentence (e.g. ${word.trim() ? `${word.trim()} is so sweet!` : 'Bella is a good puppy'})`}
+        placeholderTextColor={colors.muted}
+        style={input}
+      />
 
       {/* Photo Attachment & Preview */}
       {image ? (
@@ -310,25 +417,47 @@ function CustomWordsInner() {
         <Button small outline label="🎙️ Record pronunciation" onPress={toggleVoice} color="coral" />
       )}
 
-      <Button label="✨ Save & Add Custom Word" onPress={add} disabled={!word.trim()} color="coral" style={{ marginTop: 8 }} />
+      <Button
+        label={editingId ? '💾 Update Custom Word' : '✨ Save & Add Custom Word'}
+        onPress={saveWord}
+        disabled={!word.trim()}
+        color="coral"
+        style={{ marginTop: 8 }}
+      />
 
       {/* List of saved custom words */}
       <T k="heading" style={{ marginTop: 16 }}>My Custom Words ({mine.length})</T>
       {mine.length === 0 && <Muted>No custom words added yet. Add one above to see it here and on the main page!</Muted>}
-      {mine.map((c) => (
-        <Card key={c.id}>
-          <Row style={{ alignItems: 'center', gap: 12 }}>
-            <WordPic w={c} size={54} />
-            <View style={{ flex: 1, gap: 2 }}>
-              <T k="heading">{c.word}</T>
-              <Muted k="caption">Sound /{c.soundId}/ · {c.position}</Muted>
-            </View>
-            {c.voiceUri && <Button small label="▶" onPress={() => playUri(c.voiceUri!)} color="sky" />}
-            <Button small label="Practise" onPress={() => (s.micChecked ? go('Record', { wordId: c.id, mode: 'custom' }) : go('MicCheck'))} color="teal" />
-            <Button small outline label="✕" onPress={() => set((st) => ({ ...st, custom: st.custom.filter((x) => x.id !== c.id) }))} color="coral" />
-          </Row>
-        </Card>
-      ))}
+      {mine.map((c) => {
+        const attempts = (profile?.attempts || []).filter((a) => a.wordId === c.id && a.status === 'scored');
+        const tries = attempts.length;
+        const avg = tries > 0 ? Math.round(attempts.reduce((sum, a) => sum + a.score, 0) / tries) : null;
+        return (
+          <Card key={c.id}>
+            <Row style={{ alignItems: 'center', gap: 12 }}>
+              <WordPic w={c} size={54} />
+              <View style={{ flex: 1, gap: 4 }}>
+                <Row style={{ alignItems: 'center', gap: 6 }}>
+                  <T k="heading">{c.word}</T>
+                  {tries > 0 ? (
+                    <Pill
+                      label={`🎯 ${tries} tries · ${avg}%`}
+                      color={avg! >= 80 ? 'green' : avg! >= 60 ? 'sunny' : 'coral'}
+                    />
+                  ) : (
+                    <Pill label="New ⭐" color="teal" />
+                  )}
+                </Row>
+                <Muted k="caption">Sound /{c.soundId}/ · {c.position}</Muted>
+              </View>
+              {c.voiceUri && <Button small label="▶" onPress={() => playUri(c.voiceUri!)} color="sky" />}
+              <Button small label="Practise" onPress={() => (s.micChecked ? go('Record', { wordId: c.id, mode: 'custom' }) : go('MicCheck'))} color="teal" />
+              <Button small outline label="✏️" onPress={() => startEdit(c)} color="violet" />
+              <Button small outline label="🗑️" onPress={() => confirmDelete(c.id, c.word)} color="coral" />
+            </Row>
+          </Card>
+        );
+      })}
     </Screen>
   );
 }
