@@ -13,7 +13,7 @@ import { colors, soft } from '../theme';
 import { withPin } from './PinGate';
 
 function Hub() {
-  const { profile, s } = useStore();
+  const { profile, s, allSounds } = useStore();
   const { go, logout } = useNav();
   const [openSound, setOpenSound] = useState<string | null>(null);
   const [showLog, setShowLog] = useState(false);
@@ -27,7 +27,7 @@ function Hub() {
     const x = scored.filter((a) => a.day === d);
     return x.length ? x.reduce((n, a) => n + a.score, 0) / x.length : 0;
   });
-  const practised = SOUNDS.filter((x) => att.some((a) => a.soundId === x.id));
+  const practised = allSounds.filter((x) => att.some((a) => a.soundId === x.id));
 
   return (
     <Screen>
@@ -74,7 +74,7 @@ function Hub() {
         <Card key={a.id} accent={a.status === 'scored' ? (a.score >= 80 ? 'green' : undefined) : 'coral'}>
           <Row>
             <View style={{ flex: 1 }}>
-              <T k="bodyBold">{a.word} <Muted k="caption">{soundById(a.soundId).label}</Muted></T>
+              <T k="bodyBold">{a.word} <Muted k="caption">{soundById(a.soundId, s.customSounds).label}</Muted></T>
               <Muted k="caption">
                 {new Date(a.ts).toLocaleString()} · {a.status === 'scored'
                   ? `${a.score}/100 · ${a.source === 'parent' ? 'parent-scored' : a.source === 'azure' ? 'pronunciation score' : 'practice score'}`

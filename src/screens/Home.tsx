@@ -62,7 +62,7 @@ export default function Home() {
   if (!profile) return null;
   const band = BANDS[bandFor(profile?.age ?? 5)];
   const last = [...profile.attempts].reverse().find((a) => a.status === 'scored');
-  const lastSound = last ? soundById(last.soundId) : undefined;
+  const lastSound = last ? soundById(last.soundId, s.customSounds) : undefined;
   const lastNext = lastSound ? ladder(profile.attempts, lastSound.id, bandFor(profile.age)).find((x) => x.state === 'next') : undefined;
   const goalDone = Math.round(derived.goalProgress * profile.dailyGoal);
   const customWords = s.custom.filter((c) => c.profileId === profile.id);

@@ -655,10 +655,10 @@ function CustomWordsInner() {
 }
 
 function WeeklyInner() {
-  const { s, profile } = useStore();
+  const { s, profile, allSounds } = useStore();
   const week = new Set(Array.from({ length: 7 }, (_, i) => daysAgo(i)));
   const att = (profile?.attempts ?? []).filter((a) => week.has(a.day));
-  const rows = SOUNDS.map((x) => {
+  const rows = allSounds.map((x) => {
     const mine = att.filter((a) => a.soundId === x.id);
     const sc = mine.filter((a) => a.status === 'scored');
     return { x, scored: sc.length, acc: sc.length ? Math.round(sc.reduce((n, a) => n + a.score, 0) / sc.length) : 0, noSound: mine.length - sc.length, mastery: masteryFor(profile?.attempts ?? [], x.id).level };

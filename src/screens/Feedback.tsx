@@ -14,7 +14,7 @@ import { useSpeak } from '../audio';
 import { playSfx } from '../sfx';
 
 export default function Feedback({ params }: { params: { attemptId: string; mode: string } }) {
-  const { profile, wordById, replaceAttempt, derived } = useStore();
+  const { s, profile, wordById, replaceAttempt, derived } = useStore();
   const { replace, back, go, reset } = useNav();
   const a = profile?.attempts.find((x) => x.id === params.attemptId);
   const speak = useSpeak();
@@ -25,7 +25,7 @@ export default function Feedback({ params }: { params: { attemptId: string; mode
   }, [a?.id]);
   if (!a) return null;
   const w = wordById(a.wordId)!;
-  const sound = soundById(a.soundId);
+  const sound = soundById(a.soundId, s.customSounds);
   const pass = isPass(a.score);
   const near = isNearMiss(a.score);
   const before = derived.xp - a.xp;

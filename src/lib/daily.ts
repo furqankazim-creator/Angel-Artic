@@ -1,5 +1,5 @@
 import type { Profile } from '../store.tsx';
-import { SOUNDS, WORDS } from '../data/sounds.ts';
+import { SOUNDS, WORDS, createCustomSound } from '../data/sounds.ts';
 import type { Sound, Word } from '../data/sounds.ts';
 import { BANDS, bandFor } from '../data/curriculum.ts';
 import { masteryFor, type Mastery } from './mastery.ts';
@@ -38,10 +38,15 @@ export interface DailyChallengeItem {
 export function getProblematicSounds(profile: Profile, pool: Sound[] = SOUNDS): ProblematicSound[] {
   const attempts = profile.attempts || [];
   const targetSounds = profile.targetSounds || [];
+  const existingIds = new Set(pool.map((s) => s.id));
+  const missingTargets = targetSounds
+    .filter((id) => !existingIds.has(id))
+    .map((id) => createCustomSound(id));
+  const fullPool = [...pool, ...missingTargets];
   const band = BANDS[bandFor(profile.age)];
   const ageFocus = band ? [...band.focus, ...band.emerging] : [];
 
-  const results: ProblematicSound[] = pool.map((snd) => {
+  const results: ProblematicSound[] = fullPool.map((snd) => {
     const soundAtt = attempts.filter((a) => a.soundId === snd.id);
     const scored = soundAtt.filter((a) => a.status === 'scored');
     const unscored = soundAtt.filter((a) => a.status !== 'scored');

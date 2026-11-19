@@ -22,7 +22,7 @@ export default function Record({ params }: { params: { wordId: string; mode: str
   const speak = useSpeak();
   const { start, stop, recording, status, levels, denied } = useMeterRecorder();
   const w = wordById(params.wordId)!;
-  const sound = soundById(w.soundId);
+  const sound = soundById(w.soundId, s.customSounds);
   // Single sounds and syllables are not real words, so cloud scoring cannot judge them: local gate only.
   const cloud = w.kind !== 'sound' && w.kind !== 'syllable';
   const [message, setMessage] = useState<string | null>(null);
