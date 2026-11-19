@@ -19,6 +19,20 @@ import { withPin } from './PinGate';
 
 const input = { minHeight: layout.tap, borderRadius: 16, borderWidth: 2, borderColor: colors.border, backgroundColor: colors.white, paddingHorizontal: 16, fontSize: 17, color: colors.ink } as const;
 
+function guessSoundForWord(w: string): { soundId: string; pos: Position } | null {
+  const clean = w.trim().toLowerCase();
+  if (!clean) return null;
+  if (clean.startsWith('sh')) return { soundId: 'sh', pos: 'initial' };
+  if (clean.startsWith('ch')) return { soundId: 'ch', pos: 'initial' };
+  if (clean.startsWith('th')) return { soundId: 'th', pos: 'initial' };
+  const first = clean[0];
+  if (first === 'c' || first === 'k') return { soundId: 'k', pos: 'initial' };
+  if (['p', 'b', 'm', 't', 'd', 'n', 'g', 'f', 'v', 's', 'z', 'r', 'l', 'h', 'w', 'y', 'j'].includes(first)) {
+    return { soundId: first, pos: 'initial' };
+  }
+  return null;
+}
+
 function CustomWordsInner() {
   const { s, profile, set, allSounds, addCustomSound, deleteCustomSound } = useStore();
   const { go } = useNav();
@@ -368,7 +382,22 @@ function CustomWordsInner() {
 
       {/* Word and Emoji Input */}
       <T k="heading" style={{ marginTop: 4 }}>3. Word & picture</T>
-      <TextInput value={word} onChangeText={setWord} placeholder="Word name (e.g. Bella, Daddy, Oreo)" placeholderTextColor={colors.muted} style={input} />
+      <TextInput
+        value={word}
+        onChangeText={(val) => {
+          setWord(val);
+          if (!editingId) {
+            const guess = guessSoundForWord(val);
+            if (guess) {
+              setSoundId(guess.soundId);
+              setPosition(guess.pos);
+            }
+          }
+        }}
+        placeholder="Word name (e.g. Bella, Daddy, Oreo)"
+        placeholderTextColor={colors.muted}
+        style={input}
+      />
       <TextInput value={emoji} onChangeText={setEmoji} placeholder="Emoji icon (fallback if no photo: e.g. 🐶)" placeholderTextColor={colors.muted} style={input} />
       <TextInput
         value={sentence}
@@ -389,10 +418,13 @@ function CustomWordsInner() {
           <Button small outline label="✕ Remove" onPress={() => setImage(undefined)} color="coral" />
         </Row>
       ) : (
-        <Row style={{ gap: 8 }}>
-          <Button small outline label="📷 Gallery Photo" onPress={pickPhoto} color="teal" style={{ flex: 1 }} />
-          <Button small outline label="📸 Take Photo" onPress={takePhoto} color="teal" style={{ flex: 1 }} />
-        </Row>
+        <View style={{ gap: 4 }}>
+          <Row style={{ gap: 8 }}>
+            <Button small outline label="📷 Gallery Photo" onPress={pickPhoto} color="teal" style={{ flex: 1 }} />
+            <Button small outline label="📸 Take Photo" onPress={takePhoto} color="teal" style={{ flex: 1 }} />
+          </Row>
+          <Muted k="caption" style={{ fontStyle: 'italic' }}>💡 Tip: Close-up photos of family, pets, or favorite toys work best!</Muted>
+        </View>
       )}
 
       {/* Voice Recording Attachment & Preview */}
@@ -414,7 +446,10 @@ function CustomWordsInner() {
           <Button small outline label="✕ Change" onPress={() => setVoice(undefined)} color="coral" />
         </Row>
       ) : (
-        <Button small outline label="🎙️ Record pronunciation" onPress={toggleVoice} color="coral" />
+        <View style={{ gap: 4 }}>
+          <Button small outline label="🎙️ Record pronunciation" onPress={toggleVoice} color="coral" />
+          <Muted k="caption" style={{ fontStyle: 'italic' }}>💡 Tip: Speak clearly at your natural pace in a quiet room.</Muted>
+        </View>
       )}
 
       <Button

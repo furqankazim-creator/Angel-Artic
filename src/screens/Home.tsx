@@ -103,7 +103,7 @@ export default function Home() {
                 key={c.id}
                 accent="teal"
                 style={{ width: 145, minHeight: 140, padding: 12, alignItems: 'center', justifyContent: 'space-between', gap: 6 }}
-                onPress={() => (s.micChecked ? go('Record', { wordId: c.id, mode: 'custom' }) : go('MicCheck'))}
+                onPress={() => (s.micChecked ? go('Record', { wordId: c.id, mode: 'custom:home' }) : go('MicCheck'))}
               >
                 <WordPic w={c} size={56} />
                 <T k="bodyBold" numberOfLines={1} style={{ textAlign: 'center' }}>{c.word}</T>

@@ -42,12 +42,14 @@ export default function Feedback({ params }: { params: { attemptId: string; mode
     // Returns to the last page that the user was in
     if (a.mode === 'daily') { reset(); go('DailyChallenge'); }
     else if (a.mode.startsWith('quest:')) { reset(); go('WorldQuest', { worldId: a.mode.slice(6) }); }
+    else if (a.mode === 'custom:home') { reset(); }
     else if (a.mode === 'custom') { reset(); go('CustomWords'); }
     else { back(); }
   };
   const done = () => {
     if (a.mode === 'daily') { reset(); go('DailyChallenge'); }
     else if (a.mode.startsWith('quest:')) { reset(); go('WorldQuest', { worldId: a.mode.slice(6) }); }
+    else if (a.mode === 'custom:home') { reset(); }
     else if (a.mode === 'custom') { reset(); go('CustomWords'); }
     else { back(); }
   };
