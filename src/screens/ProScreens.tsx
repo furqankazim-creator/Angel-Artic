@@ -33,6 +33,74 @@ function guessSoundForWord(w: string): { soundId: string; pos: Position } | null
   return null;
 }
 
+const BLEND_CUES: Record<string, { cue: string; emoji: string; accent: Accent }> = {
+  tr: { cue: 'Tap tongue tip behind top teeth for /t/, then pull tongue back for /r/.', emoji: '🚂', accent: 'coral' },
+  dr: { cue: 'Tap tongue for /d/, then pull tongue tip back into mouth for /r/.', emoji: '🥁', accent: 'sky' },
+  sp: { cue: 'Make a quiet snake hissing sound /s/, then pop your lips for /p/.', emoji: '🕷️', accent: 'violet' },
+  st: { cue: 'Hiss /s/ through teeth, then tap tongue behind top teeth for /t/.', emoji: '⭐', accent: 'sunny' },
+  sk: { cue: 'Smile and hiss /s/, then lift back of tongue for /k/.', emoji: '🛹', accent: 'teal' },
+  sc: { cue: 'Smile and hiss /s/, then lift back of tongue for /k/.', emoji: '🛹', accent: 'teal' },
+  sm: { cue: 'Smile and hiss /s/, then close lips together and hum /m/.', emoji: '😊', accent: 'pink' },
+  sn: { cue: 'Hiss /s/, then hold tongue against roof of mouth for /n/.', emoji: '🐌', accent: 'green' },
+  sw: { cue: 'Hiss /s/, then round your lips into a small circle for /w/.', emoji: '🏊', accent: 'sky' },
+  sl: { cue: 'Smile and hiss /s/, then slide tongue tip up behind teeth for /l/.', emoji: '🛝', accent: 'violet' },
+  bl: { cue: 'Press lips together for /b/, then lift tongue tip up for /l/.', emoji: '🎈', accent: 'coral' },
+  cl: { cue: 'Back of tongue up for /k/, then bring tongue tip forward for /l/.', emoji: '👏', accent: 'teal' },
+  fl: { cue: 'Bite bottom lip gently with top teeth for /f/, then lift tongue for /l/.', emoji: '🌸', accent: 'pink' },
+  gl: { cue: 'Back of tongue for /g/, then tip behind front teeth for /l/.', emoji: '🧤', accent: 'green' },
+  pl: { cue: 'Pop lips for /p/, then lift tongue tip behind top teeth for /l/.', emoji: '✈️', accent: 'sky' },
+  br: { cue: 'Voice lips for /b/, then pull tongue tip back for /r/.', emoji: '🧹', accent: 'coral' },
+  cr: { cue: 'Cough sound /k/ in back of throat, then slide tongue back for /r/.', emoji: '🦀', accent: 'sunny' },
+  fr: { cue: 'Teeth on bottom lip for /f/, then pull tongue back for /r/.', emoji: '🐸', accent: 'green' },
+  gr: { cue: 'Gargle sound /g/ in throat, then curl tongue for /r/.', emoji: '🍇', accent: 'violet' },
+  pr: { cue: 'Pop lips for /p/, then curl tongue tip back for /r/.', emoji: '🎁', accent: 'pink' },
+  str: { cue: 'Hiss /s/, tap /t/, then curl tongue back for /r/.', emoji: '🍓', accent: 'coral' },
+  spl: { cue: 'Hiss /s/, pop lips /p/, then lift tongue for /l/.', emoji: '💦', accent: 'sky' },
+  spr: { cue: 'Hiss /s/, pop lips /p/, then pull tongue back for /r/.', emoji: '🌱', accent: 'green' },
+  scr: { cue: 'Hiss /s/, cough /k/ in back, then curl tongue for /r/.', emoji: '🐿️', accent: 'sunny' },
+  th: { cue: 'Put tongue gently between teeth and blow soft air.', emoji: '👅', accent: 'pink' },
+  sh: { cue: 'Round lips into a donut and make the quiet "shh" sound.', emoji: '🤫', accent: 'violet' },
+  ch: { cue: 'Stop air with tongue tip, then burst through rounded lips.', emoji: '🚂', accent: 'coral' },
+  wh: { cue: 'Round lips into a tight circle and blow gentle warm air.', emoji: '💨', accent: 'sky' },
+};
+
+const POPULAR_SOUND_EMOJIS = [
+  '⭐', '🌟', '🚂', '🥁', '🎈', '✈️', '🚗', '🚀', '🕷️', '🌸',
+  '🐸', '🍇', '🦀', '🍓', '🐶', '🐱', '🦁', '🐰', '🐻', '🐬',
+  '🐟', '🍪', '🍎', '⚽', '🎸', '🌈', '👑', '💎', '🔔', '🎯'
+];
+
+const POPULAR_WORD_EMOJIS = [
+  '🐶', '🐱', '👶', '👩', '👨', '👵', '👴', '🧸', '🚗', '🍎',
+  '🍕', '🍦', '🍪', '⭐', '🎈', '⚽', '🌟', '🚂', '🌸', '🍌',
+  '🍓', '🥛', '🚲', '👟', '🦋', '🐘', '🦄', '🎂', '🎁', '🏠',
+  '🧃', '🍭', '🍔', '🥪', '🦁', '🐰', '🐼', '🐸', '🦆', '🦖',
+];
+
+const COMMON_WORD_EMOJIS: Record<string, string> = {
+  dog: '🐶', puppy: '🐶', bella: '🐶', doggy: '🐶', pup: '🐶',
+  cat: '🐱', kitty: '🐱', kitten: '🐱',
+  baby: '👶', mom: '👩', mommy: '👩', mama: '👩', mother: '👩',
+  dad: '👨', daddy: '👨', papa: '👨', father: '👨',
+  grandma: '👵', nana: '👵', granny: '👵', grandpa: '👴', poppy: '👴',
+  bear: '🧸', teddy: '🧸', toy: '🧸',
+  car: '🚗', truck: '🚚', bus: '🚌', train: '🚂', plane: '✈️', bike: '🚲',
+  apple: '🍎', banana: '🍌', cookie: '🍪', pizza: '🍕', icecream: '🍦', milk: '🥛', juice: '🧃',
+  cake: '🎂', candy: '🍭', burger: '🍔', sandwich: '🥪',
+  star: '⭐', ball: '⚽', balloon: '🎈', flower: '🌸', house: '🏠', shoe: '👟',
+  water: '💧', sun: '☀️', tree: '🌳', book: '📖', heart: '❤️',
+  frog: '🐸', duck: '🦆', lion: '🦁', bunny: '🐰', rabbit: '🐰', dino: '🦖', dinosaur: '🦖',
+};
+
+function guessEmojiForWord(w: string): string | null {
+  const clean = w.toLowerCase().trim();
+  if (COMMON_WORD_EMOJIS[clean]) return COMMON_WORD_EMOJIS[clean];
+  for (const [key, val] of Object.entries(COMMON_WORD_EMOJIS)) {
+    if (clean.includes(key)) return val;
+  }
+  return null;
+}
+
 function CustomWordsInner() {
   const { s, profile, set, allSounds, addCustomSound, deleteCustomSound } = useStore();
   const { go } = useNav();
@@ -53,6 +121,23 @@ function CustomWordsInner() {
   const [newSoundEmoji, setNewSoundEmoji] = useState('⭐');
   const [newSoundCue, setNewSoundCue] = useState('');
   const [newSoundAccent, setNewSoundAccent] = useState<Accent>('coral');
+
+  const handleSoundSymbolChange = (sym: string) => {
+    setNewSoundSymbol(sym);
+    const clean = sym.toLowerCase().replace(/[^a-z0-9_]/g, '');
+    const match = BLEND_CUES[clean];
+    if (match) {
+      setNewSoundCue(match.cue);
+      setNewSoundEmoji(match.emoji);
+      setNewSoundAccent(match.accent);
+    } else if (clean.endsWith('r') && clean.length >= 2) {
+      setNewSoundCue('Make starting sound, then pull tongue tip back into the mouth for /r/.');
+    } else if (clean.endsWith('l') && clean.length >= 2) {
+      setNewSoundCue('Make starting sound, then lift tongue tip up behind top front teeth for /l/.');
+    } else if (clean.startsWith('s') && clean.length >= 2) {
+      setNewSoundCue('Start with quiet snake hissing sound /s/, then say the second sound.');
+    }
+  };
 
   const pickPhoto = async () => {
     try {
@@ -255,25 +340,46 @@ function CustomWordsInner() {
           <T k="caption" color={colors.ink}>Sound symbol (letters):</T>
           <TextInput
             value={newSoundSymbol}
-            onChangeText={setNewSoundSymbol}
-            placeholder="e.g. tr, bl, sp, cl, dr..."
+            onChangeText={handleSoundSymbolChange}
+            placeholder="e.g. tr, bl, sp, cl, dr, th..."
             placeholderTextColor={colors.muted}
             autoCapitalize="none"
             style={input}
           />
 
-          <Row style={{ gap: 8 }}>
-            <View style={{ flex: 1, gap: 4 }}>
-              <T k="caption" color={colors.ink}>Emoji icon:</T>
-              <TextInput
-                value={newSoundEmoji}
-                onChangeText={setNewSoundEmoji}
-                placeholder="⭐ or 🚂 or 🌟"
-                placeholderTextColor={colors.muted}
-                style={input}
-              />
+          <T k="caption" color={colors.ink}>Emoji icon (tap to select or type):</T>
+          <Row style={{ alignItems: 'center', gap: 10 }}>
+            <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: soft[newSoundAccent], alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors[newSoundAccent] }}>
+              <T style={{ fontSize: 28 }}>{newSoundEmoji || '⭐'}</T>
             </View>
+            <TextInput
+              value={newSoundEmoji}
+              onChangeText={setNewSoundEmoji}
+              placeholder="Pick or type emoji"
+              placeholderTextColor={colors.muted}
+              style={[input, { flex: 1 }]}
+            />
           </Row>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 2 }}>
+            {POPULAR_SOUND_EMOJIS.map((em) => (
+              <Pressable
+                key={em}
+                onPress={() => setNewSoundEmoji(em)}
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: newSoundEmoji === em ? soft[newSoundAccent] : colors.white,
+                  borderWidth: newSoundEmoji === em ? 2 : 1,
+                  borderColor: newSoundEmoji === em ? colors[newSoundAccent] : colors.border,
+                }}
+              >
+                <T style={{ fontSize: 18 }}>{em}</T>
+              </Pressable>
+            ))}
+          </View>
 
           <T k="caption" color={colors.ink}>Accent Color:</T>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
@@ -282,14 +388,27 @@ function CustomWordsInner() {
             ))}
           </View>
 
-          <T k="caption" color={colors.ink}>Parent tip / cue for child (optional):</T>
-          <TextInput
-            value={newSoundCue}
-            onChangeText={setNewSoundCue}
-            placeholder="e.g. Slide tongue back, then round lips"
-            placeholderTextColor={colors.muted}
-            style={input}
-          />
+          <View style={{ gap: 4 }}>
+            <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+              <T k="caption" color={colors.ink}>Parent tip / cue for child:</T>
+              {newSoundCue.length > 0 && (
+                <Pressable onPress={() => setNewSoundCue('')}>
+                  <T k="caption" color={colors.coral}>Clear</T>
+                </Pressable>
+              )}
+            </Row>
+            <TextInput
+              value={newSoundCue}
+              onChangeText={setNewSoundCue}
+              placeholder="e.g. Slide tongue back, then round lips"
+              placeholderTextColor={colors.muted}
+              multiline
+              style={[input, { minHeight: 64, paddingTop: 10, paddingBottom: 10 }]}
+            />
+            <Muted k="caption" style={{ fontStyle: 'italic' }}>
+              💡 Auto-fills based on sound! You can customize or change it anytime.
+            </Muted>
+          </View>
 
           <Button
             label="Save & Use This Sound"
@@ -392,13 +511,51 @@ function CustomWordsInner() {
               setSoundId(guess.soundId);
               setPosition(guess.pos);
             }
+            const guessedEmoji = guessEmojiForWord(val);
+            if (guessedEmoji && (!emoji || emoji === '⭐')) {
+              setEmoji(guessedEmoji);
+            }
           }
         }}
-        placeholder="Word name (e.g. Bella, Daddy, Oreo)"
+        placeholder="Word name (e.g. Bella, Daddy, Oreo, Apple)"
         placeholderTextColor={colors.muted}
         style={input}
       />
-      <TextInput value={emoji} onChangeText={setEmoji} placeholder="Emoji icon (fallback if no photo: e.g. 🐶)" placeholderTextColor={colors.muted} style={input} />
+
+      <T k="caption" color={colors.ink}>Picture icon / Emoji (tap to pick or type):</T>
+      <Row style={{ alignItems: 'center', gap: 10 }}>
+        <View style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: soft.coral, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.coral }}>
+          <T style={{ fontSize: 26 }}>{emoji || '⭐'}</T>
+        </View>
+        <TextInput
+          value={emoji}
+          onChangeText={setEmoji}
+          placeholder="Pick emoji below or type (e.g. 🐶)"
+          placeholderTextColor={colors.muted}
+          style={[input, { flex: 1 }]}
+        />
+      </Row>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 2 }}>
+        {POPULAR_WORD_EMOJIS.map((em) => (
+          <Pressable
+            key={em}
+            onPress={() => setEmoji(em)}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: emoji === em ? soft.coral : colors.white,
+              borderWidth: emoji === em ? 2 : 1,
+              borderColor: emoji === em ? colors.coral : colors.border,
+            }}
+          >
+            <T style={{ fontSize: 18 }}>{em}</T>
+          </Pressable>
+        ))}
+      </View>
+
       <TextInput
         value={sentence}
         onChangeText={setSentence}
